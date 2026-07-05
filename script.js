@@ -37,12 +37,27 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const TOTAL_KOTAK = 20;
 let kotakTerkunciDariCloud = [];
-const KATA_SANDI_ADMIN = "1234"; // <-- Ganti "1234" dengan sandi rahasia pilihanmu!
+const KATA_SANDI_ADMIN = "1234"; 
 
-// Logika Otomatis Realtime saat halaman dibuka (SUDAH DISISIPKAN FITUR VERIFIKASI PIN)
+// Logika Otomatis Realtime saat halaman dibuka
 window.addEventListener('DOMContentLoaded', async () => {
+    // Kunci instan semua interaksi tombol sejak detik pertama halaman dimuat agar tidak bisa di-klik cepat
+    for (let i = 1; i <= TOTAL_KOTAK; i++) {
+        let elemenLink = document.getElementById(`link-kotak-${i}`);
+        if (elemenLink) elemenLink.style.pointerEvents = "none";
+    }
+
+    // Tampilkan indikator memuat keamanan keamanan
+    document.getElementById('layarBlokir').style.display = 'flex';
+    document.getElementById('layarBlokir').innerHTML = '<div class="konten-blokir"><h2 style="color:white; font-family:sans-serif;">Memuat Keamanan Cloud...</h2></div>';
+
+    // Ambil data asli dari Supabase
     await muatDataAkses();
 
+    // Sembunyikan kembali layar blokir setelah data sinkron
+    document.getElementById('layarBlokir').style.display = 'none';
+
+    // Langganan perubahan data secara Realtime
     _supabase
         .channel('perubahan-akses')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'akses_kotak' }, async () => {
@@ -59,15 +74,14 @@ window.addEventListener('DOMContentLoaded', async () => {
         })
         .subscribe();
 
-    // Cek apakah browser HP kamu sudah terverifikasi sandi rahasia URL
+    // Cek status verifikasi perangkat Admin (Hanya tertulis 1 kali secara rapi)
     if (localStorage.getItem('isOwner') === 'SandiRahasiaSuper123') {
-        // Cek juga apakah status login admin sudah aktif agar tombol gerigi langsung muncul
+        let btnAdmin = document.getElementById('secretadminBtn');
         if (localStorage.getItem('adminLoggedIn') === 'true') {
-            document.getElementById('secretadminBtn').style.display = 'block';
+            btnAdmin.style.display = 'block';
+            btnAdmin.style.opacity = '1';
+            btnAdmin.innerHTML = '⚙️ Kontrol Kunci Kotak';
         } else {
-            // Jika belum login, kita buat tombol gerigi tetap muncul tapi tipis/samar
-            // Dan ketika diklik pertama kali, dia akan meminta PIN admin.
-            let btnAdmin = document.getElementById('secretadminBtn');
             btnAdmin.style.display = 'block';
             btnAdmin.style.opacity = '0.7';
             btnAdmin.innerHTML = '🔑 Login Admin';
@@ -89,6 +103,7 @@ async function muatDataAkses() {
         terapkanBlokirVisual();
     } catch (err) {
         console.error("Gagal sinkronisasi database:", err.message);
+        // Jika gagal terkoneksi internet, biarkan tombol tetap terkunci demi keamanan
     }
 }
 
@@ -103,16 +118,15 @@ function terapkanBlokirVisual() {
                 elemenLink.style.border = "1px solid rgba(239, 68, 68, 0.4)"; 
             } else {
                 elemenLink.style.opacity = "1";
-                elemenLink.style.pointerEvents = "auto";
+                elemenLink.style.pointerEvents = "auto"; // Hanya kotak yang tidak dikunci yang diaktifkan kliknya
                 elemenLink.style.border = "1px solid rgba(255, 105, 180, 0.4)"; 
             }
         }
     }
 }
 
-// Buka panel checklist menggunakan prompt kata sandi/PIN (SUDAH DISISIPKAN BEBAS PIN JIKA SUDAH LOGIN)
+// Buka panel checklist menggunakan prompt kata sandi/PIN
 function bukaPanelAdmin() {
-    // Jika admin belum berstatus logged in, minta PIN terlebih dahulu
     if (localStorage.getItem('adminLoggedIn') !== 'true') {
         let inputSandi = prompt("Masukkan Kata Sandi Admin untuk Verifikasi:");
         
@@ -124,11 +138,10 @@ function bukaPanelAdmin() {
             alert("Verifikasi Sukses! Sekarang kamu bisa mengakses panel kontrol.");
         } else {
             if (inputSandi !== null) alert("Sandi Salah! Akses ditolak.");
-            return; // Batalkan proses membuka modal jika salah
+            return; 
         }
     }
 
-    // Jika sudah terverifikasi login, panel checklist langsung terbuka BEBAS PIN
     document.getElementById('panelAdminModal').style.display = 'flex';
     let kontainerList = document.getElementById('listKontrolKotak');
     kontainerList.innerHTML = '';
