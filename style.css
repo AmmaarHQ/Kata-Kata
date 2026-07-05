@@ -1,0 +1,174 @@
+     * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* 1. Background (dari kode pertama kamu) */
+    /* --- INI TRIK UNTUK MENGGELAPKAN BACKGROUND --- */
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), /* Lapisan hitam transparan */
+        url('image/background/background2.jpg'); /* Gambar aslimu */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #0d1117; 
+    
+    /* 2. Layout (menggabungkan yang terbaik dari kedua kode) */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Mengatur posisi agar mulai dari atas */
+    padding-top: 7vh;        /* Jarak dari atas layar */
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+/* --- STYLING JUDUL KEREN & IMUT --- */
+.judul-repository {
+    grid-column: 1 / span 2; /* Membuat judul sejajar dengan ukuran 2 kotak di bawahnya */
+    background-color: #161b22;
+    border: 1px solid rgba(255, 105, 180, 0.6); /* Border neon pink */
+    border-radius: 16px;
+    padding: 12px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 105, 180, 0.2);
+    margin-bottom: 8px; 
+    
+    /* Efek teks glow */
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.judul-repository span {
+    color: #ff407d;
+    text-shadow: 0 0 10px rgba(255, 64, 125, 0.8);
+}
+
+/* --- STYLING KOTAK UTAMA --- */
+.kotak-tombol {
+    position: relative; 
+    background-color: #161b22; 
+    border: 1px solid rgba(255, 105, 180, 0.4); 
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.15); 
+    border-radius: 16px;
+    width: 100%;
+    height: 60px; /* Tinggi kotak sudah disesuaikan */
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff; 
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.kotak-tombol:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4); 
+    background-color: #1c2128;
+}
+
+/* --- AKSEN SUDUT SIKU (KIRI ATAS) --- */
+.kotak-tombol::before {
+    content: '';
+    position: absolute;
+    top: 8px; 
+    left: 8px; 
+    width: 7px; 
+    height: 7px;
+    border-top: 2px solid #ff407d; 
+    border-left: 2px solid #ff407d; 
+    border-top-left-radius: 4px; 
+}
+
+/* --- AKSEN SUDUT SIKU (KANAN BAWAH) --- */
+.kotak-tombol::after {
+    content: '';
+    position: absolute;
+    bottom: 8px; 
+    right: 8px; 
+    width: 7px;
+    height: 7px;
+    border-bottom: 2px solid #ff407d;
+    border-right: 2px solid #ff407d;
+    border-bottom-right-radius: 4px;
+}
+
+/* --- STYLING PROFIL AKUN (KIRI ATAS) --- */
+.profil-akun {
+    position: absolute; /* Memaksa posisinya melayang bebas dari elemen lain */
+    top: 5px; /* Jarak dari sisi atas layar */
+    left: 5px; /* Jarak dari sisi kiri layar */
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Jarak antara foto dan teks nama */
+    cursor: pointer;
+}
+
+.foto-profil {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; /* Membuat gambar menjadi bulat sempurna */
+    object-fit: cover; /* Agar gambar tidak gepeng */
+    
+    /* Mengikuti tema border neon pink */
+    border: 1px solid #ff407d; 
+    box-shadow: 0 0 10px rgba(255, 64, 125, 0.4);
+}
+
+.nama-akun {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: lighter;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); /* Sedikit efek glow pada nama */
+}
+
+/* --- WADAH NAVIGASI --- */
+/* --- WADAH UNTUK TOMBOL (AGAR BISA DI TENGAH) --- */
+.navigasi-bawah {
+    grid-column: 1 / span 2; /* Membentang di bawah 2 kolom */
+    display: flex;
+    justify-content: center; /* Membuat tombol mungil di tengah */
+    margin-top: 10px;        /* Jarak agar tidak terlalu rapat dengan kotak di atasnya */
+}
+
+/* --- TAMPILAN TOMBOL (TETAP MUNGIL) --- */
+.btn-nav {
+    background-color: #161b22;
+    border: 1px solid rgba(255, 105, 180, 0.6);
+    color: #ffffff;
+    padding: 8px 24px;       /* Ukuran tombol agar terlihat pas */
+    border-radius: 20px;     /* Sudut membulat */
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.2);
+    transition: 0.2s;
+    
+    /* Agar tombol tidak melar mengikuti lebar layar */
+    width: fit-content; 
+}
+
+/* Efek saat kursor di atas tombol */
+.btn-nav:hover {
+    background-color: #1c2128;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+    transform: scale(1.05); /* Membuat tombol sedikit membesar saat hover */
+}
