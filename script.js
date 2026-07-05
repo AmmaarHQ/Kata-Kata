@@ -39,7 +39,7 @@ const TOTAL_KOTAK = 20;
 let kotakTerkunciDariCloud = [];
 const KATA_SANDI_ADMIN = "1234"; // <-- Ganti "1234" dengan sandi rahasia pilihanmu!
 
-// Logika Otomatis Realtime saat halaman dibuka
+// Logika Otomatis Realtime saat halaman dibuka (SUDAH DISISIPKAN FITUR VERIFIKASI PIN)
 window.addEventListener('DOMContentLoaded', async () => {
     await muatDataAkses();
 
@@ -59,9 +59,19 @@ window.addEventListener('DOMContentLoaded', async () => {
         })
         .subscribe();
 
-    // Hanya tampilkan tombol jika di browser HP ditanamkan kode rahasia owner
+    // Cek apakah browser HP kamu sudah terverifikasi sandi rahasia URL
     if (localStorage.getItem('isOwner') === 'SandiRahasiaSuper123') {
-        document.getElementById('secretadminBtn').style.display = 'block';
+        // Cek juga apakah status login admin sudah aktif agar tombol gerigi langsung muncul
+        if (localStorage.getItem('adminLoggedIn') === 'true') {
+            document.getElementById('secretadminBtn').style.display = 'block';
+        } else {
+            // Jika belum login, kita buat tombol gerigi tetap muncul tapi tipis/samar
+            // Dan ketika diklik pertama kali, dia akan meminta PIN admin.
+            let btnAdmin = document.getElementById('secretadminBtn');
+            btnAdmin.style.display = 'block';
+            btnAdmin.style.opacity = '0.7';
+            btnAdmin.innerHTML = '🔑 Login Admin';
+        }
     }
 });
 
@@ -100,25 +110,37 @@ function terapkanBlokirVisual() {
     }
 }
 
-// Buka panel checklist menggunakan prompt kata sandi/PIN
+// Buka panel checklist menggunakan prompt kata sandi/PIN (SUDAH DISISIPKAN BEBAS PIN JIKA SUDAH LOGIN)
 function bukaPanelAdmin() {
-    let inputSandi = prompt("Masukkan Kata Sandi Admin:");
-    
-    if (inputSandi === KATA_SANDI_ADMIN) {
-        document.getElementById('panelAdminModal').style.display = 'flex';
-        let kontainerList = document.getElementById('listKontrolKotak');
-        kontainerList.innerHTML = '';
-        for (let i = 1; i <= TOTAL_KOTAK; i++) {
-            let isChecked = kotakTerkunciDariCloud.includes(i) ? 'checked' : '';
-            kontainerList.innerHTML += `
-                <div class="kontrol-item">
-                    <label style="color: #333;">🔒 Kunci Kotak ${i}</label>
-                    <input type="checkbox" id="check-kotak-${i}" value="${i}" ${isChecked}>
-                </div>
-            `;
+    // Jika admin belum berstatus logged in, minta PIN terlebih dahulu
+    if (localStorage.getItem('adminLoggedIn') !== 'true') {
+        let inputSandi = prompt("Masukkan Kata Sandi Admin untuk Verifikasi:");
+        
+        if (inputSandi === KATA_SANDI_ADMIN) {
+            localStorage.setItem('adminLoggedIn', 'true');
+            let btnAdmin = document.getElementById('secretadminBtn');
+            btnAdmin.style.opacity = '1';
+            btnAdmin.innerHTML = '⚙️ Kontrol Kunci Kotak';
+            alert("Verifikasi Sukses! Sekarang kamu bisa mengakses panel kontrol.");
+        } else {
+            if (inputSandi !== null) alert("Sandi Salah! Akses ditolak.");
+            return; // Batalkan proses membuka modal jika salah
         }
-    } else if (inputSandi !== null) {
-        alert("Sandi Salah! Akses ditolak.");
+    }
+
+    // Jika sudah terverifikasi login, panel checklist langsung terbuka BEBAS PIN
+    document.getElementById('panelAdminModal').style.display = 'flex';
+    let kontainerList = document.getElementById('listKontrolKotak');
+    kontainerList.innerHTML = '';
+    
+    for (let i = 1; i <= TOTAL_KOTAK; i++) {
+        let isChecked = kotakTerkunciDariCloud.includes(i) ? 'checked' : '';
+        kontainerList.innerHTML += `
+            <div class="kontrol-item">
+                <label style="color: #333;">🔒 Kunci Kotak ${i}</label>
+                <input type="checkbox" id="check-kotak-${i}" value="${i}" ${isChecked}>
+            </div>
+        `;
     }
 }
 
