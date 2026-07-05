@@ -49,7 +49,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // Tampilkan indikator memuat keamanan keamanan
     document.getElementById('layarBlokir').style.display = 'flex';
-    document.getElementById('layarBlokir').innerHTML = '<div class="konten-blokir"><h2 style="color:white; font-family:sans-serif;">Memuat Keamanan Cloud...</h2></div>';
+    document.getElementById('layarBlokir').innerHTML = '';
 
     // Ambil data asli dari Supabase
     await muatDataAkses();
