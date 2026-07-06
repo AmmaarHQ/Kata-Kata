@@ -303,4 +303,4 @@ body {
 /* Tetap sembunyikan teks bawaan lama */
 .layar-blokir h1, .layar-blokir p, .layar-blokir h2 {
     display: none !important;
-}
+}  
