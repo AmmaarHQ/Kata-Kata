@@ -284,23 +284,23 @@ body {
     border-radius: 5px;
 }
 
-/* Mengubah layar blokir menjadi tirai transparan anti-klik */
+/* Mengubah layar blokir menjadi tirai BENING TOTAL & ANTI-KLIK */
 .layar-blokir {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.3) !important; /* Putih samar transparan */
-    backdrop-filter: blur(2px); /* Efek blur halus */
+    background-color: transparent !important; /* Bening total, tidak ada warna sama sekali */
+    backdrop-filter: none !important; /* Hapus efek blur agar tampilan web di belakang terlihat jelas */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999999;
-    pointer-events: auto; /* Mengunci total semua klik */
+    pointer-events: auto; /* Tetap mengunci total semua klik pengunjung */
 }
 
-/* Kosongkan gaya teks di dalamnya agar tidak memunculkan kotak hitam/putih */
+/* Tetap sembunyikan teks bawaan lama */
 .layar-blokir h1, .layar-blokir p, .layar-blokir h2 {
     display: none !important;
 }
